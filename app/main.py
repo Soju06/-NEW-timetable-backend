@@ -58,8 +58,22 @@ async def timetable():
     
 @app.post("/api/register")
 async def register(data : User_example):
-
-
+    
+    if data.pw != data.re_pw:
+        return jsonify({"비밀번호가 일치하지 않습니다."})
+    
+    hashed_pw = hashing_pw(data.pw)
+    
+    new_user = User(
+        id=data.get('id'), 
+        pw=data.get('hashed_pw'),
+        school_id=data.get('day')
+    )
+    
+    # jwt 추가 예정
+    
+    db.add(new_user)
+    db.commit()
     
 
 # @app.route('/cal', methods=['POST', 'GET'])
