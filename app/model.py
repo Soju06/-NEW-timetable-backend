@@ -25,7 +25,7 @@ class User(Base):
 # class Todo_example(BaseModel):
 #     id = str
 
-class User_example(BaseModel):
+class Register_example(BaseModel):
     id = str 
     school_id = str
     pw = str

@@ -18,7 +18,7 @@ async def timetable():
         "09:40": 2,
         "10:40": 3,
         "11:40": 4,
-        "12:40": 9, # 점심시간은 9교시로 표시함
+        "12:30": 9, # 점심시간은 9교시로 표시함
         "01:20": 5,
         "02:10": 6,
         "03:10": 7,
@@ -38,6 +38,7 @@ async def timetable():
                 if clock < time_format[param]:
                     current_time = param
                     return jsonify(current_time)
+                
         if not current_time: # 만약 아니라면 반환
             return jsonify("현재 수업 시간이 아닙니다.")
             
@@ -45,17 +46,17 @@ async def timetable():
         current_lecture = Ttable.query.filter(current_time, current_weekday).all() # 유저기능으로 반에 맞는 시간표 구현할것.
 
         # db 모델 토대로 객체 생성
-        timetable_data = []
-        for item in current_lecture:
-            timetable_data.append({
-                "id": item.id,
-                "content": item.content,
-                "time": item.time,
-                "day": item.day
-            })
+        # timetable_data = []
+        # for item in current_lecture:
+        #     timetable_data.append({
+        #         "id": item.id,
+        #         "content": item.content,
+        #         "time": item.time,
+        #         "day": item.day
+        #     })
         # 직렬화 하기 귀찮다
-        return jsonify(timetable_data)
-    
+        return jsonify(current_lecture) # 그냥 jsonify로 직렬화 (테스트)
+     
 @app.post("/api/register")
 async def register(data : User_example):
     
@@ -66,9 +67,10 @@ async def register(data : User_example):
     
     new_user = User(
         id=data.get('id'), 
-        pw=data.get('hashed_pw'),
+        pw=hashed_pw,
         school_id=data.get('day')
     )
+    
     try:
         db.add(new_user)
         db.commit()
