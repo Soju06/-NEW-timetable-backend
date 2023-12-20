@@ -69,12 +69,12 @@ async def register(data : User_example):
         pw=data.get('hashed_pw'),
         school_id=data.get('day')
     )
-    
-    # jwt 추가 예정
-    
-    db.add(new_user)
-    db.commit()
-    
+    try:
+        db.add(new_user)
+        db.commit()
+        return jsonify({"ok":"true"})
+    except:
+        return jsonify({"ok":"false"})
 
 # @app.route('/cal', methods=['POST', 'GET'])
 # def cal():
