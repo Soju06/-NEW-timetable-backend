@@ -9,10 +9,8 @@ from app.model import *
 from app.database import *
 from app.tools import *
 
-import random
 
-
-@app.get("/timetable")
+@app.get("/api/timetable")
 async def timetable():
         time_format = {
         "08:10": 0,
@@ -59,6 +57,11 @@ async def timetable():
             })
         # 직렬화 하기 귀찮다
         return jsonify(timetable_data)
+    
+@app.post("/api/register")
+async def register(data : User_example):
+    pass
+    
 
 # @app.route('/cal', methods=['POST', 'GET'])
 # def cal():
