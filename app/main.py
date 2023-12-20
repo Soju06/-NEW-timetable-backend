@@ -27,24 +27,22 @@ async def timetable():
 
         now = datetime.now()
         clock = now.strftime("%H:%M")
-        currentDay = datetime.now()
-
-        # 현재 시간과 가장 가까운 시간대 찾기
+        current_weekday = now.weekday() # 0:월요일 , 6:일요일
         
+        if current_weekday == 5 or current_weekday == 6:
+            return jsonify("오늘은 수업이 없습니다.")
+        
+        # 수업시간인지 확인
         for param in time_format:
             if clock >= time_format[param]:
                 if clock < time_format[param]:
                     current_time = param
                     return jsonify(current_time)
-        if not current_time:
+        if not current_time: # 만약 아니라면 반환
             return jsonify("현재 수업 시간이 아닙니다.")
             
-        # 만약 현재 시간이 시간표에 없는 시간이라면 마지막 시간을 가져옴
-        if current_time is None:
-            current_time = max(time_format.keys())
-
         # 뽑아온 시간을 통해 쿼리문으로 조회하기
-        current_lecture = Ttable.query.filter(current_time).all()
+        current_lecture = Ttable.query.filter(current_time, current_weekday).all()
 
         # db 모델 토대로 객체 생성
         timetable_data = []
