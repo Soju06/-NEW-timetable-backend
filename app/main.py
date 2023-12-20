@@ -36,7 +36,8 @@ async def timetable():
         for param in time_format:
             if clock >= time_format[param]:
                 if clock < time_format[param]:
-                    return jsonify(current_time = param)
+                    current_time = param
+                    return jsonify(current_time)
         if not current_time:
             return jsonify("현재 수업 시간이 아닙니다.")
             
