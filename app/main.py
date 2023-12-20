@@ -42,7 +42,7 @@ async def timetable():
             return jsonify("현재 수업 시간이 아닙니다.")
             
         # 뽑아온 시간을 통해 쿼리문으로 조회하기
-        current_lecture = Ttable.query.filter(current_time, current_weekday).all()
+        current_lecture = Ttable.query.filter(current_time, current_weekday).all() # 유저기능으로 반에 맞는 시간표 구현할것.
 
         # db 모델 토대로 객체 생성
         timetable_data = []
@@ -58,7 +58,8 @@ async def timetable():
     
 @app.post("/api/register")
 async def register(data : User_example):
-    pass
+
+
     
 
 # @app.route('/cal', methods=['POST', 'GET'])
@@ -99,4 +100,3 @@ async def register(data : User_example):
 
 # if __name__ == "__main__":
 #     app.run(debug = True)
-    
