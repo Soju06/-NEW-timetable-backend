@@ -58,7 +58,7 @@ async def timetable():
         return jsonify(current_lecture) # 그냥 jsonify로 직렬화 (테스트)
      
 @app.post("/api/register")
-async def register(data : User_example):
+async def register(data : Register_example):
     
     if data.pw != data.re_pw:
         return jsonify({"비밀번호가 일치하지 않습니다."})
@@ -78,6 +78,19 @@ async def register(data : User_example):
     except:
         return jsonify({"ok":"false"})
 
+@app.post("/api/login")
+async def login(data : Login_example):
+    
+    hashed_pw = hashing_pw(data.pw)
+    
+    user = User.objects.filter(data.id, hashed_pw)
+    
+    if not user:
+        return jsonify({"아이디 혹은 비밀번호가 다릅니다."})
+    
+    token = encToken(user.id)
+    return jsonify({"ok":"true"}, token)
+    
 # @app.route('/cal', methods=['POST', 'GET'])
 # def cal():
 #     pass

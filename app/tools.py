@@ -22,5 +22,8 @@ def encToken(user_id):
   return token
 
 def hashing_pw(plain_pw):
-    hashed_password = hashlib.sha256(plain_pw.encode('utf-8')).hexdigest()
-    return hashed_password
+  
+  salted_pw = plain_pw + SECRET
+
+  hashed_password = hashlib.sha256(salted_pw.encode('utf-8')).hexdigest()
+  return hashed_password
