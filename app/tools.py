@@ -8,7 +8,7 @@ DAY = 86400
 SECRET = "S@b4L"
 
 def checkAuth(token):
-    pass
+  pass
 
 def encToken(user_id):
   end = int(time()) + DAY

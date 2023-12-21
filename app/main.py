@@ -1,13 +1,13 @@
 from typing import Optional
-from fastapi import FastAPI, Form, jsonify
+from fastapi import FastAPI, Form
 from datetime import datetime
 
 app = FastAPI()
 
-from app.config import * 
-from app.model import * 
-from app.database import *
-from app.tools import *
+from config import * 
+from model import * 
+from database import *
+from tools import *
 
 
 @app.get("/api/timetable")
@@ -30,38 +30,37 @@ async def timetable():
         current_weekday = now.weekday() # 0:월요일 , 6:일요일
         
         if current_weekday == 5 or current_weekday == 6:
-            return jsonify("오늘은 수업이 없습니다.")
+            return ("오늘은 수업이 없습니다.")
         
         # 수업시간인지 확인
         for param in time_format:
             if clock >= time_format[param]:
                 if clock < time_format[param]:
                     current_time = param
-                    return jsonify(current_time)
                 
         if not current_time: # 만약 아니라면 반환
-            return jsonify("현재 수업 시간이 아닙니다.")
+            return ("현재 수업 시간이 아닙니다.")
             
         # 뽑아온 시간을 통해 쿼리문으로 조회하기
         current_lecture = Ttable.query.filter(current_time, current_weekday).all() # 유저기능으로 반에 맞는 시간표 구현할것.
 
         # db 모델 토대로 객체 생성
-        # timetable_data = []
-        # for item in current_lecture:
-        #     timetable_data.append({
-        #         "id": item.id,
-        #         "content": item.content,
-        #         "time": item.time,
-        #         "day": item.day
-        #     })
+        timetable_data = []
+        for item in current_lecture:
+            timetable_data.append({
+                "id": item.id,
+                "content": item.content,
+                "time": item.time,
+                "day": item.day
+            })
         # 직렬화 하기 귀찮다
-        return jsonify(current_lecture) # 그냥 jsonify로 직렬화 (테스트)
+        return timetable_data # 그냥 jsonify로 직렬화 (테스트)
      
 @app.post("/api/register")
 async def register(data : Register_example):
     
     if data.pw != data.re_pw:
-        return jsonify({"비밀번호가 일치하지 않습니다."})
+        return {"비밀번호가 일치하지 않습니다."}
     
     hashed_pw = hashing_pw(data.pw)
     
@@ -74,9 +73,9 @@ async def register(data : Register_example):
     try:
         db.add(new_user)
         db.commit()
-        return jsonify({"ok":"true"})
+        return {"ok":"true"}
     except:
-        return jsonify({"ok":"false"})
+        return {"ok":"false"}
 
 @app.post("/api/login")
 async def login(data : Login_example):
@@ -86,10 +85,11 @@ async def login(data : Login_example):
     user = User.objects.filter(data.id, hashed_pw)
     
     if not user:
-        return jsonify({"아이디 혹은 비밀번호가 다릅니다."})
+        return {"아이디 혹은 비밀번호가 다릅니다."}
     
     token = encToken(user.id)
-    return jsonify({"ok":"true"}, token)
+    return ({"ok":"true"}, token)
+
     
 # @app.route('/cal', methods=['POST', 'GET'])
 # def cal():
