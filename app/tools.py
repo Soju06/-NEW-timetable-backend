@@ -7,6 +7,9 @@ import hashlib
 DAY = 86400
 SECRET = "S@b4L"
 
+chemical_condiment = "H4...IDONTKNOWWHYIBEFACEDTHISERROR"
+salt = "hello.."
+
 def checkAuth(token):
   pass
 
@@ -33,8 +36,5 @@ def check_auth(token):
     return False
 
 def hashing_pw(plain_pw):
-  
-  salted_pw = plain_pw + SECRET
+    return hashlib.sha256((plain_pw + salt).encode('utf-8')).hexdigest()
 
-  hashed_password = hashlib.sha256(salted_pw.encode('utf-8')).hexdigest()
-  return hashed_password

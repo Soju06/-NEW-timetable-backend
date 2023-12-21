@@ -1,6 +1,7 @@
 from typing import Optional
 from fastapi import FastAPI, Form
 from datetime import datetime
+from pydantic import BaseModel, constr
 
 app = FastAPI()
 
@@ -79,8 +80,9 @@ async def register(data : Register_example):
 
 @app.post("/api/login")
 async def login(data : Login_example):
-    
-    hashed_pw = hashing_pw(data.pw)
+
+    pw = data.pw
+    hashed_pw = hashing_pw(pw)
     
     user = User.objects.filter(data.id, hashed_pw)
     
@@ -123,7 +125,7 @@ async def login(data : Login_example):
 #     session.add(new_timetable)  # 새로운 데이터 추가
 #     session.commit()  # 커밋
         
-#     return {
+#     return {ㄴ
 #         "ok" : True
 #     }
 
