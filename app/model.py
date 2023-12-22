@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from pydantic import BaseModel, constr
+from typing import List, Optional, Union
 
 from database import Base
 
@@ -22,14 +23,11 @@ class User(Base):
     password = Column(String, nullable=False)
     school_id = Column(String, nullable=False)
     
-# class Todo_example(BaseModel):
-#     id = str
-
 class Register_example(BaseModel):
-    id : constr(min_length=6, max_length=30)
+    username : constr(min_length=6, max_length=30)
     school_id : str
-    pw : str
-    re_pw :str 
+    password : Union[str , int] 
+    re_pw : Union[str, int]
     
     # @validator("school_id")
     # def validate_department(cls, param):

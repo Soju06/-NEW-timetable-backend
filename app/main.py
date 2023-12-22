@@ -63,12 +63,12 @@ async def register(data : Register_example):
     if data.pw != data.re_pw:
         return {"비밀번호가 일치하지 않습니다."}
     
-    hashed_pw = hashing_pw(data.pw)
+    hashed_pw = hashing_pw(data.password)
     
     new_user = User(
-        id=data.get('id'), 
-        pw=hashed_pw,
-        school_id=data.get('day')
+        username=data.username, 
+        password=hashed_pw,
+        school_id=data.school_id
     )
     
     try:
