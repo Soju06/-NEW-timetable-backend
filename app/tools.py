@@ -37,4 +37,4 @@ def check_auth(token):
 
 def hashing_pw(plain_pw):
     return hashlib.sha256((plain_pw + salt).encode('utf-8')).hexdigest()
-
+  

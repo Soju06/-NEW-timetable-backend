@@ -10,6 +10,7 @@ from model import *
 from database import *
 from tools import *
 
+db = SessionLocal()
 
 @app.get("/api/timetable")
 async def timetable():
@@ -60,7 +61,7 @@ async def timetable():
 @app.post("/api/register")
 async def register(data : Register_example):
     
-    if data.pw != data.re_pw:
+    if data.password != data.re_pw:
         return {"비밀번호가 일치하지 않습니다."}
     
     hashed_pw = hashing_pw(data.password)
@@ -72,6 +73,7 @@ async def register(data : Register_example):
     )
     
     try:
+        db = SessionLocal()
         db.add(new_user)
         db.commit()
         return {"ok":"true"}

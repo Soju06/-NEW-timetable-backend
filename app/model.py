@@ -26,8 +26,8 @@ class User(Base):
 class Register_example(BaseModel):
     username : constr(min_length=6, max_length=30)
     school_id : str
-    password : Union[str , int] 
-    re_pw : Union[str, int]
+    password : str
+    re_pw : str
     
     # @validator("school_id")
     # def validate_department(cls, param):
