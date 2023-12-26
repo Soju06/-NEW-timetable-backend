@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import FastAPI, Form
+from fastapi import FastAPI, Depends, HTTPException, status
 from datetime import datetime
 from pydantic import BaseModel, constr
 
@@ -32,19 +32,19 @@ async def timetable():
         current_weekday = now.weekday() # 0:월요일 , 6:일요일
         
         if current_weekday == 5 or current_weekday == 6:
-            return ("오늘은 수업이 없습니다.")
+            return {"오늘은 수업이 없습니다."}
         
         # 수업시간인지 확인
         for param in time_format:
-            if clock >= time_format[param]:
-                if clock < time_format[param]:
+            if clock >= int(time_format[param]):
+                if clock < int(time_format[param]):
                     current_time = param
                 
         if not current_time: # 만약 아니라면 반환
-            return ("현재 수업 시간이 아닙니다.")
+            return {"현재 수업 시간이 아닙니다."}
             
         # 뽑아온 시간을 통해 쿼리문으로 조회하기
-        current_lecture = Ttable.query.filter(current_time, current_weekday).all() # 유저기능으로 반에 맞는 시간표 구현할것.
+        current_lecture = Ttable.query.filter(current_time, current_weekday) # 유저기능으로 반에 맞는 시간표 구현할것.
 
         # db 모델 토대로 객체 생성
         timetable_data = []
@@ -55,30 +55,37 @@ async def timetable():
                 "time": item.time,
                 "day": item.day
             })
-        # 직렬화 하기 귀찮다
+        
         return timetable_data # 그냥 jsonify로 직렬화 (테스트)
      
 @app.post("/api/register")
-async def register(data : Register_example):
+async def register(data : Register_example, db : Session = Depends(get_db)):
     
     if data.password != data.re_pw:
         return {"비밀번호가 일치하지 않습니다."}
     
     hashed_pw = hashing_pw(data.password)
     
-    new_user = User(
+    new_user = User( 
         username=data.username, 
         password=hashed_pw,
         school_id=data.school_id
     )
     
     try:
-        db = SessionLocal()
-        db.add(new_user)
-        db.commit()
-        return {"ok":"true"}
-    except:
-        return {"ok":"false"}
+        db.add(new_user)  # 세션에 데이터 추가
+        db.commit()  # 커밋
+
+    except Exception as e:
+        # 에러 발생 시 롤백
+        db.rollback()
+
+    finally:
+        # 세션 닫기
+        db.close()
+        return {"ok":"True"}
+    
+
 
 @app.post("/api/login")
 async def login(data : Login_example):

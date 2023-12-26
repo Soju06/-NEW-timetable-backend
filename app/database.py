@@ -12,7 +12,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 def get_db():
-    db = Session()  # 세션을 가져오는 코드 (실제 코드에 맞게 작성해야 함)
+    db = SessionLocal()  # 수정: SessionLocal()로 세션 생성
     try:
         yield db
     finally:
