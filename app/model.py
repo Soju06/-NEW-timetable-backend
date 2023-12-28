@@ -19,9 +19,9 @@ class Ttable(Base):
 class User(Base):
     __tablename__ = "user"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    username = Column(String, nullable=False)
-    password = Column(String, nullable=False)
-    school_id = Column(String, nullable=False)
+    username = Column(String(50), nullable=False)
+    password = Column(String(50), nullable=False)
+    school_id = Column(String(10), nullable=False)
     
 class Register_example(BaseModel):
     username : constr(min_length=6, max_length=30)

@@ -11,6 +11,7 @@ from database import *
 from tools import *
 
 db = SessionLocal()
+Base.metadata.create_all
 
 @app.get("/api/timetable")
 async def timetable():
@@ -66,15 +67,27 @@ async def register(data : Register_example, db : Session = Depends(get_db)):
     
     hashed_pw = hashing_pw(data.password)
     
-    new_user = User( 
-        username=data.username, 
-        password=hashed_pw,
-        school_id=data.school_id
-    )
+    # new_user = User( 
+    #     username=data.username, 
+    #     password=hashed_pw,
+    #     school_id=data.school_id
+    # )
+    
+    data_dict = data.dict()
+    data_dict.pop('re_pw')
+    
+    db_user = User(**data.dict())
+    
+    # new_user = User( 
+    #     username="sibal", 
+    #     password="gaessibal",
+    #     school_id="grahaha"
+    # )
     
     try:
-        db.add(new_user)  # 세션에 데이터 추가
+        db.add(db_user)  # 세션에 데이터 추가
         db.commit()  # 커밋
+        return {"ok":"True"}
 
     except Exception as e:
         # 에러 발생 시 롤백
@@ -83,7 +96,6 @@ async def register(data : Register_example, db : Session = Depends(get_db)):
     finally:
         # 세션 닫기
         db.close()
-        return {"ok":"True"}
     
 
 
@@ -117,7 +129,7 @@ async def login(data : Login_example):
 #                 return specific_line
 #             else:
 #                 return "해당 줄이 존재하지 않습니다."
-#     except FileNotFoundError:
+#     except file_notfound:
 #         return jsonify({"Message": "파일을 찾을 수 없습니다."})
 
 
@@ -134,7 +146,7 @@ async def login(data : Login_example):
 #     session.add(new_timetable)  # 새로운 데이터 추가
 #     session.commit()  # 커밋
         
-#     return {ㄴ
+#     return {
 #         "ok" : True
 #     }
 
