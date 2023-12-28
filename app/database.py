@@ -1,19 +1,14 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import Session, sessionmaker
 
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:dldusdn1105@localhost:3306/timetable"
+SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:sojuKing@localhost:3306/timetable"
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+    SQLALCHEMY_DATABASE_URL,
 )
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(
+    bind=engine
+)  # 기본값에 자동으로 커밋도 해주고, 자동으로 닫아줌. ###################################################################
 
 Base = declarative_base()
-
-def get_db():
-    db = SessionLocal()  # 수정: SessionLocal()로 세션 생성
-    try:
-        yield db
-    finally:
-        db.close()
